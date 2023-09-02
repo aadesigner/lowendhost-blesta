@@ -6,7 +6,3 @@ It is free and always will be!
 Credits:
 AALayer - Custom & Modern Web Designs
 www.aalayer.com
-
-
-AALayer is part of Alimemaj
-www.alimemaj.com
