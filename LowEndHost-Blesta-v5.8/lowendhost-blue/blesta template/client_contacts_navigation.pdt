@@ -1,0 +1,35 @@
+
+    <div class="list-group">
+        <?php
+        $navigation = [
+            'contacts/' => [
+                'name' => 'ClientContacts.navigation.nav_contacts',
+                'active' => false,
+                'icon' => 'fas fa-list'
+            ],
+            'contacts/add/' => [
+                'name' => 'ClientContacts.navigation.nav_contacts_add',
+                'active' => false,
+                'icon' => 'fas fa-plus-square'
+            ],
+            '' => [
+                'name' => 'ClientContacts.navigation.nav_return',
+                'active' => false,
+                'icon' => 'fas fa-arrow-left'
+            ]
+        ];
+
+        foreach ($navigation as $link => $value) {
+            $link = $this->Html->safe((isset($link) ? $link : ''));
+            $prefix = !str_contains($link, '://') ? (isset($this->base_uri) ? $this->Html->safe($this->base_uri) : null) : '';
+        ?>
+            <a href="<?php echo $prefix . $link;?>" class="list-group-item list-group-item-action <?php echo ($value['active'] ? 'active' : '');?>">
+                <i class="<?php (print (isset($value['icon']) ? $this->Html->safe($value['icon']) : null));?> fa-fw"></i>
+                <?php
+                $this->_($value['name'] ?? null);
+                ?>
+            </a>
+        <?php
+        }
+        ?>
+    </div>

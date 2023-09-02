@@ -1,0 +1,207 @@
+        <div class="col-md-12">
+            <?php
+            echo (isset($message) ? $message : null);
+
+            $this->WidgetClient->clear();
+            $this->WidgetClient->create($this->_('ClientMain.edit.boxtitle_edit', true));
+            $this->WidgetClient->startBody();
+
+            $this->Form->create(null, ['class' => 'disable-on-submit']);
+            ?>
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="#contact" class="nav-link active" data-toggle="tab"><?php $this->_('ClientMain.edit.heading_contact');?></a></li>
+                <?php
+                if ((isset($is_primary) ? $is_primary : null)) {
+                ?>
+                    <li class="nav-item"><a href="#billing" class="nav-link" data-toggle="tab"><?php $this->_('ClientMain.edit.heading_billing');?></a></li>
+                    <li class="nav-item"><a href="#settings" class="nav-link" data-toggle="tab"><?php $this->_('ClientMain.edit.heading_settings');?></a></li>
+                <?php
+                }
+                ?>
+                <li class="nav-item"><a href="#authentication" class="nav-link" data-toggle="tab"><?php $this->_('ClientMain.edit.heading_authentication');?></a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="contact" class="tab-pane fade show active">
+                    <?php
+                    echo (isset($contact_info) ? $contact_info : null);
+                    echo (isset($phone_numbers) ? $phone_numbers : null)
+                    ?>
+                </div>
+                <?php
+                if ((isset($is_primary) ? $is_primary : null)) {
+                ?>
+                    <div id="billing" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><?php $this->_('ClientMain.edit.heading_billing');?></h4>
+                                <?php
+                                // Show the Tax ID field
+                                if ((isset($enabled_fields['tax_id']) ? $enabled_fields['tax_id'] : false)) {
+                                ?>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientMain.edit.field_taxid', true), 'tax_id');
+                                    $this->Form->fieldText('tax_id', (isset($vars->settings['tax_id']) ? $vars->settings['tax_id'] : null), ['id' => 'tax_id', 'class' => 'form-control', 'placeholder' => $this->_('ClientMain.edit.field_taxid', true)]);
+                                    ?>
+                                </div>
+                                <?php
+                                }
+
+                                // Show currency if enabled
+                                if ((isset($enabled_fields['default_currency']) ? $enabled_fields['default_currency'] : false)) {
+                                ?>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientMain.edit.field_default_currency', true), 'default_currency');
+                                    $this->Form->fieldSelect('default_currency', (isset($currencies) ? $currencies : null), (isset($vars->settings['default_currency']) ? $vars->settings['default_currency'] : null), ['id' => 'default_currency', 'class' => 'form-control']);
+                                    ?>
+                                </div>
+                                <?php
+                                }
+                                ?>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientMain.edit.field_invoiceaddress', true), 'inv_address_to');
+                                    $this->Form->fieldSelect('inv_address_to', (isset($contacts) ? $contacts : null), (isset($vars->settings['inv_address_to']) ? $vars->settings['inv_address_to'] : null), ['id' => 'inv_address_to', 'class' => 'form-control']);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settings" class="tab-pane fade">
+                        <?php
+                        // Show additional settings, if any
+                        if ((isset($show_additional_settings) ? $show_additional_settings : false)) {
+                        ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><?php $this->_('ClientMain.edit.heading_settings');?></h4>
+
+                                <?php
+                                // Show language if enabled
+                                if ((isset($enabled_fields['language']) ? $enabled_fields['language'] : false)) {
+                                ?>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientMain.edit.field_language', true), 'language');
+                                    $this->Form->fieldSelect('language', (isset($languages) ? $languages : null), (isset($vars->settings['language']) ? $vars->settings['language'] : null), ['id' => 'language', 'class' => 'form-control']);
+                                    ?>
+                                </div>
+                                <?php
+                                }
+                                // Set custom fields partial
+                                echo (isset($custom_fields) ? $custom_fields : null);
+                                ?>
+                                <?php
+                                if ((isset($enabled_fields['receive_email_marketing']) ? $enabled_fields['receive_email_marketing'] : false)) {
+                                ?>
+                                <div class="form-group">
+                                    <div class="card bg-light d-block p-3">
+                                        <?php $this->Form->fieldCheckbox('receive_email_marketing', 'true', (isset($vars->settings['receive_email_marketing']) ? $vars->settings['receive_email_marketing'] : 'false') == 'true', ['id' => 'receive_email_marketing']); ?>
+                                        <?php $this->Form->label($this->_('ClientMain.edit.field_receive_email_marketing', true), 'receive_email_marketing', ['class' => 'inline']);?>
+                                    </div>
+                                </div>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                        ?>
+                    </div>
+                <?php
+                }
+                ?>
+                <div id="authentication" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>
+                                <?php $this->_('ClientMain.edit.heading_authentication');?>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <?php $this->Form->label($this->_('ClientMain.edit.field_username', true), 'username');?>
+                                <p><?php (print (isset($username) ? $this->Html->safe($username) : null));?></p>
+                            </div>
+                            <div class="form-group">
+                                <?php
+                                $this->Form->label($this->_('ClientMain.edit.field_current_password', true), 'current_password');
+                                $this->Form->fieldPassword('current_password', ['id' => 'current_password', 'class' => 'form-control']);
+                                ?>
+                            </div>
+                            <div class="form-group">
+                                <?php
+                                $this->Form->label($this->_('ClientMain.edit.field_new_password', true), 'new_password');
+                                $this->Form->fieldPassword('new_password', ['id' => 'new_password', 'class' => 'form-control']);
+                                ?>
+                            </div>
+                            <div class="form-group">
+                                <?php
+                                $this->Form->label($this->_('ClientMain.edit.field_confirm_password', true), 'confirm_password');
+                                $this->Form->fieldPassword('confirm_password', ['id' => 'confirm_password', 'class' => 'form-control']);
+                                ?>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <?php
+                                    $this->Form->fieldCheckbox('two_factor_mode', 'totp', (isset($vars->two_factor_mode) ? $vars->two_factor_mode : null) != 'none', ['id' => 'two_factor_mode', 'data-toggle' => 'collapse', 'data-target' => '#two_factor_options']);
+                                    $this->Form->fieldHidden('two_factor_key', (isset($vars->two_factor_key) ? $vars->two_factor_key : null));
+                                    $this->_('ClientMain.edit.field_two_factor_mode');
+                                    ?>
+                                </label>
+                            </div>
+                            <div id="two_factor_options" class="collapse<?php echo ((isset($vars->two_factor_mode) ? $vars->two_factor_mode : null) != 'none' ? ' show' : '');?>">
+                                <div class="form-group">
+                                    <p>
+                                        <?php $this->_('ClientMain.edit.two_factor_desc');?>
+                                    </p>
+                                    <p>
+                                        <?php $this->_('ClientMain.edit.two_factor_instructions');?>
+                                    </p>
+                                    <ol>
+                                        <li>
+                                            <?php $this->_('ClientMain.edit.two_factor_step1');?>
+                                            <ul>
+                                                <li><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en" target="_blank"><?php $this->_('ClientMain.edit.text_android');?></a></li>
+                                                <li><a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" target="_blank"><?php $this->_('ClientMain.edit.text_ios');?></a></li>
+                                                <li><a href="http://www.windowsphone.com/en-us/store/app/authenticator/e7994dbc-2336-4950-91ba-ca22d653759b" target="_blank"><?php $this->_('ClientMain.edit.text_windows');?></a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <?php $this->_('ClientMain.edit.two_factor_step2', false, (isset($vars->two_factor_key) ? $vars->two_factor_key : null), (isset($vars->two_factor_key_base32) ? $vars->two_factor_key_base32 : null));?>
+                                        </li>
+                                        <li>
+                                            <?php $this->_('ClientMain.edit.two_factor_step3');?>
+                                        </li>
+                                    </ol>
+
+                                    <img id="two_factor_qr" src="//chart.googleapis.com/chart?chs=200x200&cht=qr&chl=<?php echo urlencode('otpauth://totp/' . $this->Html->safe($vars->username ?? null) . '?secret=' . ($vars->two_factor_key_base32 ?? null) . '&issuer=' . $this->Html->safe($two_factor_issuer ?? null));?>" alt="" />
+                                </div>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientMain.edit.field_otp', true), 'otp');
+                                    $this->Form->fieldText('otp', null, ['id' => 'otp', 'class' => 'form-control']);
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-light float-right">
+                <i class="fas fa-edit"></i> <?php $this->_('ClientMain.edit.field_editsubmit');?>
+            </button>
+
+            <?php
+            $this->Form->end();
+
+            $this->WidgetClient->endBody();
+            $this->WidgetClient->end();
+            ?>
+        </div>

@@ -1,0 +1,31 @@
+
+    <?php
+    if (!empty($amounts)) {
+    ?>
+    <ul class="list-group">
+        <?php
+        if (count((isset($currencies) ? $currencies : [])) > 1) {
+        ?>
+        <li class="list-group-item credits bg-light">
+            <?php
+            foreach ($currencies as $currency) {
+            ?>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'main/getcurrencyamounts/' . (isset($currency) ? $currency : null) . '/');?>" class="btn btn-light btn-sm<?php echo ($currency == (isset($selected_currency) ? $selected_currency : null)) ? ' active' : '';?>" id="<?php (print (isset($currency) ? $this->Html->safe($currency) : null));?>"><?php (print (isset($currency) ? $this->Html->safe($currency) : null));?></a>
+            <?php
+            }
+            ?>
+        </li>
+        <?php
+        }
+        foreach ($amounts as $type => $item) {
+        ?>
+        <li class="list-group-item credits">
+            <?php (print (isset($item['lang']) ? $this->Html->safe($item['lang']) : null));?> <span class="currency_value"><?php (print (isset($item['amount']) ? $this->Html->safe($item['amount']) : null));?></span>
+        </li>
+        <?php
+        }
+        ?>
+    </ul>
+    <?php
+    }
+    ?>
