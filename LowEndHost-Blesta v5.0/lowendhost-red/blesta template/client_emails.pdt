@@ -1,0 +1,118 @@
+        <div class="col-md-12">
+            <?php
+            echo $this->Html->ifSet($message);
+
+            $this->WidgetClient->clear();
+            $this->WidgetClient->create($this->_('ClientEmails.index.boxtitle_emails', true), ['id' => 'client_emails'], $this->Html->ifSet($render_section, null));
+            $this->WidgetClient->startBody();
+
+            if ($this->Html->ifSet($logs, false) && ($num_logs = count($logs)) > 0) {
+            ?>
+            <div class="table-responsive">
+                <table class="table table-curved table-striped-alt table-hover" id="emails">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'emails/index/?sort=date_sent&order=' . ($sort == 'date_sent' ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == 'date_sent' ? ' ' . $order : '');?>"><?php $this->_('ClientEmails.index.heading_date');?></a>
+                            </th>
+                            <th>
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'emails/index/?sort=subject&order=' . ($sort == 'subject' ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == 'subject' ? ' ' . $order : '');?>"><?php $this->_('ClientEmails.index.heading_subject');?></a>
+                            </th>
+                            <th>
+                                <span><?php $this->_('ClientEmails.index.heading_summary');?></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Display all email logs
+                        for ($i = 0; $i < $num_logs; $i++) {
+                        ?>
+                        <tr class="expand email_log">
+                            <td><?php echo $this->Date->cast($this->Html->_($logs[$i]->date_sent, true), 'date_time');?></td>
+                            <td><?php $this->Html->_($logs[$i]->subject);?></td>
+                            <?php
+                            // Limit length of summary
+                            $summary = $this->Html->_($logs[$i]->body_text, true);
+                            if (strlen($summary) > 40) {
+                                if (function_exists('mb_strimwidth')) {
+                                    $summary = mb_strimwidth($summary, 0, 40) . '...';
+                                } else {
+                                    $summary = substr($summary, 0, 40) . '...';
+                                }
+                            }
+                            ?>
+                            <td><?php echo $summary;?></td>
+                        </tr>
+                        <tr class="expand_details">
+                            <td class="subtable" colspan="3">
+                                <div class="table-responsive">
+                                    <table class="table table-curved table-striped multi_heading p-0">
+                                        <thead>
+                                            <tr class="email_header">
+                                                <td><?php $this->_('ClientEmails.index.text_to');?></td>
+                                                <td>
+                                                    <a href="mailto:<?php $this->Html->_($logs[$i]->to_address);?>"><?php $this->Html->_($logs[$i]->to_address);?></a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            // Show CC addresses
+                                            if (!empty($logs[$i]->cc_address)) {
+                                            ?>
+                                            <tr class="email_header">
+                                                <td><?php $this->_('ClientEmails.index.text_cc');?></td>
+                                                <td>
+                                                    <?php
+                                                    $j = 0;
+                                                    foreach ($logs[$i]->cc_address as $cc_address) {
+                                                    ?><?php echo $j++ > 0 ? ', ' : '';?>
+                                                    <a href="mailto:<?php $this->Html->_($cc_address);?>"><?php $this->Html->_($cc_address);?></a><?php
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                            <tr class="email_header">
+                                                <td><?php $this->_('ClientEmails.index.text_from');?></td>
+                                                <td>
+                                                    <a href="mailto:<?php $this->Html->_($logs[$i]->from_address);?>"><?php $this->Html->_($logs[$i]->from_name);?></a>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="2" class="body"><?php echo nl2br($this->Html->hyperlink($this->Html->_($logs[$i]->body_text, true)));?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            } else {
+            ?>
+            <div class="alert alert-info">
+                <p>
+                    <?php $this->_('ClientEmails.index.no_results');?>
+                </p>
+            </div>
+            <?php
+            }
+
+            $this->WidgetClient->endBody();
+            if ($this->Pagination->hasPages()) {
+                $this->WidgetClient->startFooter();
+                $this->Pagination->build();
+                $this->WidgetClient->endFooter();
+            }
+            $this->WidgetClient->end();
+            ?>
+        </div>

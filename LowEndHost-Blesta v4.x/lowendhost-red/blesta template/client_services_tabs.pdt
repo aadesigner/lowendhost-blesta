@@ -1,0 +1,17 @@
+
+            <div class="list-group">
+                <?php
+                foreach ($tabs as $tab) {
+                    $attributes = $this->Html->ifSet($tab['attributes'], []);
+                    $attributes['class'] = 'list-group-item borderless left-nav' . (isset($attributes['class']) ? ' ' . $attributes['class'] : '');
+                    if ($this->Html->ifSet($tab['current'])) {
+                        $attributes['class'] .= ' active';
+                    }
+                ?>
+                <a<?php echo $this->Html->buildAttributes($attributes);?>>
+                    <i class="<?php $this->Html->_($tab['icon']);?>"></i> <?php $this->Html->_($tab['name']);?>
+                </a>
+                <?php
+                }
+                ?>
+            </div>

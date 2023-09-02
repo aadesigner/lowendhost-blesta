@@ -1,0 +1,79 @@
+<?php
+$success_message = (isset($success) ? $success : (isset($message) ? $message : false));
+$types = [
+    'success' => [
+        'show' => (isset($success) || isset($message)),
+        'title' => (isset($message_title) ? $message_title : false),
+        'message' => $success_message,
+        'buttons' => (isset($success_buttons) ? $success_buttons : null)
+    ],
+    'danger' => [
+        'show' => isset($error),
+        'title' => (isset($error_title) ? $error_title : false),
+        'message' => (isset($error) ? $error : false),
+        'buttons' => (isset($danger_buttons) ? $danger_buttons : null)
+    ],
+    'warning' => [
+        'show' => isset($notice),
+        'title' => (isset($notice_title) ? $notice_title : false),
+        'message' => (isset($notice) ? $notice : false),
+        'buttons' => (isset($notice_buttons) ? $notice_buttons : null)
+    ],
+    'info' => [
+        'show' => isset($info),
+        'title' => (isset($info_title) ? $info_title : false),
+        'message' => (isset($info) ? $info : false),
+        'buttons' => (isset($info_buttons) ? $info_buttons : null)
+    ]
+];
+
+foreach ($types as $type => $message) {
+    if (!$message['show']) {
+        continue;
+    }
+?>
+<div class="alert alert-<?php (print (isset($type) ? $this->Html->safe($type) : null));?> alert-dismissable w-100" role="alert">
+    <?php
+    if ((isset($show_close) ? $show_close : true)) {
+    ?>
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <?php
+    }
+    if ((isset($message['title']) ? $message['title'] : false)) {
+    ?>
+    <strong><?php (print (isset($message['title']) ? $this->Html->safe($message['title']) : null));?></strong><br>
+    <?php
+    }
+
+    if (is_array($message['message'])) {
+        foreach ($message['message'] as $field => $messages) {
+            foreach ($messages as $key => $message_text) {
+            ?>
+                <?php echo (isset($message_text) ? $this->Html->safe($message_text, (isset($preserve_tags) ? $preserve_tags : false)) : null);?><br />
+            <?php
+            }
+        }
+    } else {
+    ?>
+    <?php echo (isset($message['message']) ? $this->Html->safe($message['message'], (isset($preserve_tags) ? $preserve_tags : false)) : null);?>
+    <?php
+    }
+
+    if ((isset($message['buttons']) ? $message['buttons'] : false) && is_array($message['buttons'])) {
+    ?>
+    <p>
+        <?php
+        foreach ($message['buttons'] as $button) {
+        ?>
+        <a href="<?php (print (isset($button['url']) ? $this->Html->safe($button['url']) : null));?>" class="btn btn-<?php (print (isset($type) ? $this->Html->safe($type) : null));?>"><i class="fas fa-fw <?php echo $this->Html->safe((isset($button['icon_class']) ? $button['icon_class'] : 'fa-exclamation-triangle'));?>"></i> <?php (print (isset($button['label']) ? $this->Html->safe($button['label']) : null));?></a>
+        <?php
+        }
+        ?>
+    </p>
+    <?php
+    }
+    ?>
+</div>
+<?php
+}
+?>

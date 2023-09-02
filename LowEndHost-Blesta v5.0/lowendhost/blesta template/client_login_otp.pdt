@@ -1,0 +1,41 @@
+
+                <div class="col-md-4 col-sm-6 col-md-offset-1">
+                    <h2><i class="fas fa-lock"></i> <?php $this->Html->_($company->name);?></h2>
+                    <h4><?php $this->_('ClientLogin.otp.login_heading');?></h4>
+                    <p><?php $this->_('ClientLogin.otp.description');?></p>
+                    <hr />
+                </div>
+                <div class="col-md-4 col-sm-6 col-md-offset-1">
+                    <div class="panel panel-blesta">
+                        <div class="panel-body">
+                            <?php echo $this->Html->ifSet($message);?>
+
+                            <?php
+                            $this->Form->create(null, ['class' => 'disable-on-submit']);
+                            ?>
+                            <fieldset>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientLogin.otp.field_otp', true), 'otp');
+                                    $this->Form->fieldText('otp', null, ['id' => 'otp', 'class' => 'form-control', 'placeholder' => $this->_('ClientLogin.otp.field_otp', true)]);
+                                    ?>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block"><i class="fas fa-sign-in-alt"></i> <?php $this->_('ClientLogin.otp.field_submit');?></button>
+                                <?php
+                                $this->Form->fieldSubmit('login', '', ['class' => 'hidden', 'hidefocus' => 'true']);
+                                ?>
+                            </fieldset>
+                            <?php
+                            $this->Form->end();
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+<?php
+$this->Javascript->setInline('
+    $(document).ready(function() {
+        $("#login_username").focus();
+    });
+');
+?>

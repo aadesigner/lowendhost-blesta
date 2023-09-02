@@ -1,0 +1,62 @@
+
+                <div class="col-md-4 col-sm-6 col-md-offset-1">
+                    <h2><i class="fas fa-lock"></i> <?php $this->Html->_($company->name);?></h2>
+                    <h4><?php $this->_('ClientLogin.index.login_heading');?></h4>
+                    <p><?php $this->_('ClientLogin.index.description');?></p>
+                    <hr />
+                </div>
+                <div class="col-md-4 col-sm-6 col-md-offset-1">
+                    <div class="panel panel-blesta">
+                        <div class="panel-body">
+                            <?php echo $this->Html->ifSet($message);?>
+
+                            <?php
+                            $this->Form->create(null, ['class' => 'disable-on-submit']);
+                            if ($this->Html->ifSet($vars->forward_to)) {
+                                $this->Form->fieldHidden('forward_to', $vars->forward_to);
+                            }
+                            ?>
+                            <fieldset>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientLogin.index.field_username', true), 'login_username');
+                                    $this->Form->fieldText('username', $this->Html->ifSet($vars->username), ['id' => 'login_username', 'class' => 'form-control', 'placeholder' => $this->_('ClientLogin.index.field_username', true)]);
+                                    ?>
+                                </div>
+                                <div class="form-group">
+                                    <?php
+                                    $this->Form->label($this->_('ClientLogin.index.field_password', true), 'login_password');
+                                    $this->Form->fieldPassword('password', ['id' => 'login_password', 'class' => 'form-control', 'placeholder' => $this->_('ClientLogin.index.field_password', true)]);
+                                    ?>
+                                </div>
+                                <div class="checkbox">
+                                    <label for="login_remember_me">
+                                        <?php
+                                        $this->Form->fieldCheckbox('remember_me', 'true', $this->Html->ifSet($vars->remember_me, false), ['id' => 'login_remember_me']);
+                                        $this->_('ClientLogin.index.field_rememberme');
+                                        ?>
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block"><i class="fas fa-sign-in-alt-alt"></i> <?php $this->_('ClientLogin.index.field_loginsubmit');?></button>
+                                <?php
+                                $this->Form->fieldSubmit('login', '', ['class' => 'hidden', 'hidefocus' => 'true']);
+                                ?>
+                            </fieldset>
+                            <?php
+                            $this->Form->end();
+                            ?>
+                        </div>
+                        <div class="panel-footer">
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'login/reset/');?>"><?php $this->_('ClientLogin.index.link_resetpassword');?></a>
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'login/forgot/');?>" class="d-block float-xl-right"><?php $this->_('ClientLogin.index.link_forgotusername');?></a>
+                        </div>
+                    </div>
+                </div>
+
+<?php
+$this->Javascript->setInline('
+	$(document).ready(function() {
+		$("#login_username").focus();
+	});
+');
+?>

@@ -1,0 +1,14 @@
+{
+	"version": "1.0.0",
+	"name": "LowEndHost - Green",
+	"description": "A free theme designed by AALayer.com",
+	"authors": [
+		{
+			"name": "AALayer",
+			"url": "https://aalayer.com"
+		}
+	],
+	"require": {
+		"blesta": ">=3.2.0"
+	}
+}

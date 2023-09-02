@@ -1,0 +1,54 @@
+
+    <div class="col-md-4 col-sm-6 col-md-offset-1">
+        <h2><i class="fas fa-lock"></i> <?php (print (isset($company->name) ? $this->Html->safe($company->name) : null));?></h2>
+        <h4><?php $this->_('ClientLogin.reset.reset_heading');?></h4>
+        <p><?php $this->_('ClientLogin.reset.description');?></p>
+        <hr />
+    </div>
+    <div class="col-md-4 col-sm-6 col-md-offset-1">
+        <div class="panel panel-blesta">
+            <div class="card-content">
+                <div class="panel-body">
+                    <?php echo (isset($message) ? $message : null);?>
+
+                    <?php
+                    $this->Form->create(null, ['class' => 'disable-on-submit']);
+                    ?>
+                    <fieldset>
+                        <div class="form-group">
+                            <?php
+                            $this->Form->label($this->_('ClientLogin.reset.field_username', true), 'login_username');
+                            $this->Form->fieldText('username', (isset($vars->username) ? $vars->username : null), ['id' => 'login_username', 'class' => 'form-control', 'placeholder' => $this->_('ClientLogin.reset.field_username', true)]);
+                            ?>
+                        </div>
+                        <?php
+                        if ((isset($captcha) ? $captcha : null)) {
+                            ?>
+                            <div class="form-group">
+                                <?php echo $captcha;?>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-arrow-circle-right"></i> <?php $this->_('ClientLogin.reset.field_resetsubmit');?>
+                        </button>
+                        <a class="btn btn-light btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'login/');?>">
+                            <i class="fas fa-ban"></i> <?php $this->_('ClientLogin.reset.link_login');?>
+                        </a>
+                    </fieldset>
+                    <?php
+                    $this->Form->end();
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php
+$this->Javascript->setInline('
+    $(document).ready(function() {
+        $("#login_username").focus();
+    });
+');
+?>

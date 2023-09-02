@@ -1,0 +1,271 @@
+        <div class="col-md-12">
+            <?php
+            echo $this->Html->ifSet($message);
+
+            $this->Form->create(null, ['class' => 'disable-on-submit']);
+            $this->Form->fieldHidden('pay_with', $this->Html->ifSet($vars->pay_with), ['id' => 'pay_with']);
+
+            $this->WidgetClient->clear();
+            $this->WidgetClient->create($this->_('ClientPay.method.boxtitle_method', true), ['id' => 'client_method'], $this->Html->ifSet($render_section, null));
+            $this->WidgetClient->startBody();
+
+            // Determine how many columns to draw
+            $column_widths = 12;
+            $columns = 3;
+
+            if (empty($payment_accounts) || count($payment_accounts) <= 1 || $this->Html->ifSet($require_passphrase)) {
+                $columns--;
+            }
+            if (empty($payment_types) || count($payment_types) <= 1) {
+                $columns--;
+            }
+            if (empty($nm_gateways)) {
+                $columns--;
+            }
+
+            $column_widths /= ($columns == 0 ? 1 : $columns);
+
+            // No payment options available
+            if ($columns == 0) {
+            ?>
+            <div class="alert alert-info">
+                <?php $this->_('ClientPay.method.no_options');?>
+            </div>
+            <?php
+            }
+
+            // If the invoice has already been paid, remove all payment methods
+            if ($this->Html->ifSet($invoice_paid)) {
+                $payment_accounts = [];
+                $payment_types = [];
+                $nm_gateways = [];
+                $columns = 0;
+            }
+
+            // Set payment option container
+            if ($columns > 0) {
+            ?>
+            <div class="row marbot10">
+            <?php
+            }
+
+            // Show column for payment accounts, if any
+            if (!empty($payment_accounts) && count($payment_accounts) > 1 && !$this->Html->ifSet($require_passphrase)) {
+            ?>
+                <div class="col-md-<?php $this->Html->_($column_widths);?><?php echo $columns > 1 ? ' col-border' : '';?>">
+                    <h4><?php $this->_('ClientPay.method.field_useaccount');?></h4>
+                    <?php
+                    $this->Form->fieldSelect('payment_account', $this->Html->ifSet($payment_accounts), $this->Html->ifSet($vars->payment_account), ['id' => 'account', 'class' => 'form-control input-sm']);
+                    ?>
+                </div>
+            <?php
+            }
+
+            // Show column for new payment types, if any
+            if (!empty($payment_types) && count($payment_types) > 1) {
+            ?>
+                <div class="col-md-<?php $this->Html->_($column_widths);?><?php echo $columns > 2 ? ' col-border' : '';?>">
+                    <h4><?php $this->_('ClientPay.method.field_newdetails');?></h4>
+                    <?php
+                    $this->Form->fieldSelect('payment_type', $this->Html->ifSet($payment_types), $this->Html->ifSet($vars->payment_type), ['id' => 'details', 'class' => 'form-control input-sm']);
+                    ?>
+                </div>
+            <?php
+            }
+
+            // Show column for non-merchant gateway payment options, if any
+            if (!empty($nm_gateways)) {
+                $options_heading = $this->_('ClientPay.method.heading_other_payment_options', true);
+                if ($columns == 1) {
+                    $options_heading = $this->_('ClientPay.method.heading_payment_options', true);
+                }
+            ?>
+                <div class="col-md-<?php $this->Html->_($column_widths);?>">
+                    <h4><?php echo $this->Html->ifSet($options_heading);?></h4>
+                    <?php
+                    // Set non-merchant gateways
+                    foreach ($this->Html->ifSet($nm_gateways, []) as $gateway) {
+                    ?>
+                    <div class="radio">
+                        <label>
+                            <?php
+                            $this->Form->fieldRadio('gateway', $this->Html->ifSet($gateway->id), ($this->Html->ifSet($vars->pay_with) == $this->Html->ifSet($gateway->id)), ['class' => 'gateway']);
+                            $this->Html->_($gateway->name);
+                            ?>
+                        </label>
+                    </div>
+                    <?php
+                    }
+                    ?>
+                </div>
+            <?php
+            }
+
+            // Close payment option container
+            if ($columns > 0) {
+            ?>
+                <div class="clearfix marbot10"></div>
+            </div>
+            <?php
+            }
+            ?>
+            <div id="payment_details" style="display:none;">
+                <?php
+                echo $this->Html->ifSet($contact_info);
+                ?>
+                <div id="payment_details_cc" style="display:none;">
+                    <?php echo $this->Html->ifSet($cc_info);?>
+                </div>
+                <div id="payment_details_ach" style="display:none;">
+                    <?php echo $this->Html->ifSet($ach_info);?>
+                </div>
+            </div>
+            <?php
+            // Allow credits to be selected
+            if ($this->Html->ifSet($credits['amount']) > 0 && !$this->Html->ifSet($invoice_paid)) {
+            ?>
+            <div class="checkbox">
+                <label>
+                <?php
+                $this->Form->fieldCheckbox('apply_credit', 'true', $this->Html->ifSet($vars->apply_credit) == 'true', ['id' => 'apply_credit']);
+                $this->_('ClientPay.method.field_apply_credit', false, $this->CurrencyFormat->format($credits['amount'], $credits['currency']));
+                ?>
+                </label>
+            </div>
+            <?php
+            }
+            ?>
+
+            <hr />
+            <?php
+            if (!empty($invoice)) {
+            ?>
+            <div class="marbot10">
+                <h4><?php $this->_('ClientPay.method.heading_invoice', false, $this->Html->_($invoice->id_code, true));?></h4>
+                <div class="table-responsive">
+                    <table class="table table-curved table-striped">
+                        <thead>
+                            <tr>
+                                <th><?php $this->_('ClientPay.method.invoice_description');?></th>
+                                <th><?php $this->_('ClientPay.method.invoice_quantity');?></th>
+                                <th><?php $this->_('ClientPay.method.invoice_amount');?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $currency_options = [
+                                'prefix' => false,
+                                'suffix' => false,
+                                'code' => false,
+                                'with_separator' => false,
+                                'html_code' => false,
+                                'decimals' => $this->Html->ifSet($currency->precision)
+                            ];
+                            foreach ($this->Html->ifSet($invoice->line_items, []) as $line) {
+                            ?>
+                            <tr>
+                                <td><?php $this->Html->_($line->description);?></td>
+                                <td><?php echo $this->Html->safe($this->CurrencyFormat->truncateDecimal($this->Html->ifSet($line->qty), 0));?></td>
+                                <td><?php echo $this->CurrencyFormat->format($this->Html->ifSet($line->amount), $this->Html->ifSet($currency->code), $currency_options);?></td>
+                            </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <div class="pull-right">
+                <div class="well well-sm">
+                    <?php $this->_('ClientPay.confirm.total');?>
+                    <strong><?php echo $this->CurrencyFormat->format($this->Html->ifSet($total), $this->Html->ifSet($currency->code));?></strong>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+            <button type="submit"<?php echo ($columns <= 0 ? 'style="display:none;"' : '');?> class="btn btn-default pull-right" id="submit_payment">
+                <i class="fa fa-arrow-circle-right"></i>
+                <span class="confirm"><?php $this->_('ClientPay.method.field_submit');?></span>
+                <span class="credit_confirm" style="display:none;"><?php $this->_('ClientPay.method.field_credit_submit');?></span>
+            </button>
+            <?php
+            $this->WidgetClient->endBody();
+            $this->WidgetClient->end();
+
+            $this->Form->end();
+            ?>
+        </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var payment_type = '<?php echo $this->Html->ifSet($vars->payment_type);?>';
+        if (payment_type == 'ach' || payment_type == 'cc') {
+            $("#payment_details").show();
+            $("#payment_details_" + payment_type).show();
+        }
+
+        $('#account, #details').on('change', function() {
+            $('#pay_with').val($(this).attr('id'));
+            $('.gateway').prop('checked', false);
+
+            if ($(this).attr('id') == 'details') {
+                if ($(this).val() == 'cc' || $(this).val() == 'ach') {
+                    $('#payment_details').show();
+                    togglePayDetails($(this).val());
+
+                    $('html,body').animate({scrollTop: $('#payment_details').offset().top}, 'slow');
+                }
+                else
+                    $('#payment_details').hide();
+
+                $('#account').val('');
+            }
+            else {
+                $('#payment_details, #payment_details_cc, #payment_details_ach').hide();
+                $('#details').val('');
+            }
+        });
+
+        $('.gateway').on('change', function() {
+            $('#pay_with').val($(this).val());
+            $('#payment_details, #payment_details_cc, #payment_details_ach').hide();
+            $('#account, #details').val('');
+        });
+
+        toggleCredit();
+        $('#apply_credit').change(function() {
+            toggleCredit();
+        });
+    });
+
+    function toggleCredit() {
+        if ($('#apply_credit').prop('checked')) {
+            $('span.credit_confirm').show();
+            $('#submit_payment').show();
+            $('span.confirm').hide();
+        }
+        else {
+            $('span.confirm').show();
+            $('span.credit_confirm').hide();
+
+            if (<?php echo $columns;?> <= 0) {
+                $('#submit_payment').hide();
+            }
+        }
+    }
+
+    function togglePayDetails(val) {
+        if (val == "cc") {
+            $("#payment_details_ach").hide();
+            $("#payment_details_cc").show();
+        }
+        else {
+            $("#payment_details_cc").hide();
+            $("#payment_details_ach").show();
+        }
+    }
+</script>

@@ -1,0 +1,25 @@
+Installation:
+
+You will have 3 folders, each folder for the color-theme you like. Choose your favourite one.
+
+Inside it you will have the "php template" and "blesta template".
+
+PHP Template = HTML Template of the theme, very easy to edit, though you'll need a local server such as XAMPP to edit/view.
+
+Blesta Template = Blesta Integration & Theme for the main HTML template, this is what you upload in Blesta.
+
+To install Blesta Template go to app/views/client inside your Blesta installation and upload the template color you like there
+(blesta template not HTML/PHP template). 
+
+Than activate it at your Blesta Dashboard - > Look and Feel -> Template name
+
+To change the footer links for the theme, go to
+
+ app/views/client/lowendhost-theme/structure.pdt 
+
+and at the bottom of that file you'll have the links of the footer. Basic HTML knowledge required.
+
+Good luck!
+
+- AALayer
+www.aalayer.com

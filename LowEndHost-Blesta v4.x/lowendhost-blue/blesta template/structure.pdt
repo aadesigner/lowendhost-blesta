@@ -1,0 +1,342 @@
+<?php
+$html_dir = (in_array($this->_('AppController.lang.dir', true), ['ltr', 'rtl']) ? $this->_('AppController.lang.dir', true) : 'ltr');
+$html_lang = (!empty($language) ? substr($language, 0, 2) : 'en');
+?><!DOCTYPE html>
+<html dir="<?php $this->Html->_($html_dir);?>" lang="<?php $this->Html->_($html_lang);?>" xml:lang="<?php $this->Html->_($html_lang);?>">
+    <head>
+        <meta http-equiv="content-type" content="text/html" />
+        <meta charset="UTF-8" />
+        <title><?php echo $this->Html->safe(($this->Html->ifSet($page_title) ? $page_title . ' | ' : '') . $this->Html->ifSet($system_company->name));?></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="<?php echo $this->view_dir;?>images/favicon.ico" />
+
+        <link href="<?php echo $this->view_dir;?>css/application.min.css" rel="stylesheet" type="text/css" />
+        <?php
+        // Theme CSS
+        if (isset($theme_css)) {
+        ?>
+        <link href="<?php $this->Html->_($theme_css);?>" rel="stylesheet" type="text/css" media="screen" />
+        <?php
+        }
+        if ($this->_('AppController.lang.dir', true) == 'rtl') {
+        ?>
+        <link href="<?php echo $this->view_dir;?>css/rtl.css" rel="stylesheet" type="text/css" media="screen" />
+        <?php
+        }
+        ?>
+        <link href="<?php echo $this->view_dir;?>css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->view_dir;?>css/more.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/jquery.min.js"></script>
+        <!--[if lt IE 10]><script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/json2.js"></script><![endif]-->
+        <script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.adapter.jquery.js"></script>
+        <script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.js"></script>
+        <!--[if lt IE 10]><script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.html4.js"></script><![endif]-->
+        <script type="text/javascript" src="<?php echo $this->Html->safe($this->view_dir . 'javascript/app.min.js' . (!empty($hash_version) ? '?v=' . $hash_version : ''));?>"></script>
+
+        <?php
+        echo $this->Javascript->getFiles('head');
+        echo $this->Html->ifSet($custom_head);
+        ?>
+
+        <!--[if lt IE 9]>
+            <script src="<?php echo $this->view_dir;?>javascript/html5shiv.js" type="text/javascript"></script>
+            <script src="<?php echo $this->view_dir;?>javascript/respond.min.js" type="text/javascript"></script>
+        <![endif]-->
+        <?php echo $this->Html->ifSet($head);?>
+    </head>
+    <body>
+        <?php echo $this->Html->ifSet($body_start);?>
+        <?php
+        if ($this->Html->ifSet($show_header, true)) {
+        ?>
+        <div class="header">
+            <div class="container">
+                <?php
+                if ($this->Html->ifSet($staff_as_client)) {
+                ?>
+                <span class="label label-info pull-right"><a href="<?php echo $this->Html->safe($this->admin_uri . 'clients/logoutasclient/');?>"><span class="fa fa-info-circle"></span> <?php $this->_('AppController.client_structure.staff_as_client_note');?></a></span>
+                <?php
+                } elseif ($this->Html->ifSet($show_language) && count($this->Html->ifSet($languages, [])) > 1) {
+                ?>
+                <div class="top-nav pull-right">
+                    <?php
+                    $this->Form->create($this->client_uri . 'main/setlanguage/', ['id' => 'language_selector']);
+                    $this->Form->fieldHidden('redirect_uri', $this->Html->ifSet($request_uri));
+                    $this->Form->fieldHidden('language_code', Configure::get('Blesta.language'), ['id' => 'language_code']);
+                    $this->Form->end();
+                    ?>
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php $this->Html->_($languages[Configure::get('Blesta.language')])?> <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-right" id="language_switcher">
+                                <?php
+                                foreach ($languages as $code => $language) {
+                                ?>
+                                <li class="language_code" language_code="<?php echo $this->Html->safe($code);?>"><a href="#"><?php echo $this->Html->safe($language);?></a></li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+        <div class="nav-content">
+             <div class="nav">
+                <nav class="navbar navbar-default" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only"><?php $this->_('AppController.sreader.navigation');?></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                       <a class="navbar-brand" href="<?php echo $this->Html->safe($this->base_uri);?>">
+                        <?php
+                        if (!empty($theme_logo)) {
+                        ?>
+                            <img width="220px" style="margin-top: 0px;" src="<?php $this->Html->_($theme_logo);?>" alt="Logo" />
+                        <?php
+                        } elseif (!empty($blesta_logo)) {
+                        ?>
+                            <img width="220px" style="margin-top: 0px;" class="blesta" src="<?php $this->Html->_($blesta_logo);?>" alt="Blesta" />
+                        <?php
+                        } else {
+                        ?>
+                            <img width="220px" style="margin-top: 0px;" class="blesta" src="<?php echo $this->view_dir;?>images/logo.svg" alt="Blesta" />
+                        <?php
+                        }
+                        ?>
+                    </a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <div class="container">
+                            <?php
+                            $active_nav = null;
+                            ?>
+                            <ul class="nav navbar-nav">
+                                <?php
+                                foreach ($this->Html->ifSet($nav, []) as $link => $value) {
+                                    $attributes = [];
+                                    $link_attributes = [];
+                                    $dropdown = !empty($value['sub']);
+                                    $active = false;
+
+                                    if ($value['active']) {
+                                        $active = true;
+                                        $attributes['class'][] = 'active';
+                                        $active_nav = $value;
+                                    }
+                                    if ($dropdown) {
+                                        $attributes['class'][] = 'dropdown';
+                                        $link_attributes['class'][] = 'dropdown-toggle';
+                                        $link_attributes['data-toggle'][] = 'dropdown';
+
+                                        // Set parent to active if child is
+                                        if (!$active) {
+                                            foreach ($this->Html->ifSet($value['sub'], []) as $sub_link => $sub_value) {
+                                                if ($sub_value['active']) {
+                                                    $attributes['class'][] = 'active';
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                ?>
+                                <li<?php echo $this->Html->buildAttributes($attributes);?>>
+                                    <a href="<?php $this->Html->_($link);?>"<?php echo $this->Html->buildAttributes($link_attributes);?>>
+                                        <i class="<?php $this->Html->_($value['icon']);?>"></i>
+                                        <?php
+                                        $this->Html->_($value['name']);
+
+                                        if ($dropdown) {
+                                        ?>
+                                        <b class="caret"></b>
+                                        <?php
+                                        }
+                                        ?>
+                                    </a>
+                                    <?php
+                                    if (!empty($value['sub'])) {
+                                    ?>
+                                    <ul class="dropdown-menu">
+                                        <?php
+                                        foreach ($this->Html->ifSet($value['sub'], []) as $sub_link => $sub_value) {
+                                        ?>
+                                        <li>
+                                            <a href="<?php $this->Html->_($sub_link);?>"><i class="<?php $this->Html->_($sub_value['icon']);?>"></i> <?php $this->Html->_($sub_value['name']);?></a>
+                                        </li>
+                                        <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                    <?php
+                                    }
+                                    ?>
+                                </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <?php
+                                if ($this->Html->ifSet($logged_in)) {
+                                ?>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <?php $this->Html->_($contact->first_name);?> <?php $this->Html->_($contact->last_name);?>
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="<?php echo $this->Html->safe($this->client_uri . 'main/edit/');?>"><i class="fa fa-edit fa-fw"></i> <?php $this->_('AppController.client_structure.text_update_account');?></a></li>
+                                        <?php
+                                        if ($this->Html->ifSet($portal_installed, false)) {
+                                        ?>
+                                        <li><a href="<?php echo $this->Html->safe(WEBDIR);?>"><i class="fa fa-circle-o fa-fw"></i> <?php $this->_('AppController.client_structure.text_return_to_portal');?></a></li>
+                                        <?php
+                                        }
+                                        ?>
+                                        <li class="divider"></li>
+                                        <li><a href="<?php echo $this->Html->safe($this->client_uri . 'logout/');?>"><i class="fa fa-sign-out fa-fw"></i> <?php $this->_('AppController.client_structure.text_logout');?></a></li>
+                                    </ul>
+                                </li>
+                                <?php
+                                } else {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->Html->safe($this->client_uri . 'login/');?>">
+                                        <?php $this->_('AppController.client_structure.text_login');?>
+                                    </a>
+                                </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div><!-- /.navbar-collapse -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div style="height: 70px;"></div>
+        <div class="title">
+            <div class="container">
+                <h3><?php echo ($this->Html->ifSet($title) ? $this->Html->_($title, true) : $this->_('AppController.client_structure.default_title', true));?></h3>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+
+        <!-- Begin Content -->
+        <div class="container">
+            <div class="row<?php echo (!$this->Html->ifSet($show_header, true) ? ' login' : '');?>">
+                <?php
+                if (!empty($active_nav['secondary'])) {
+                ?>
+                    <div class="col-md-3">
+                        <div class="list-group">
+                            <?php
+                            foreach ($active_nav['secondary'] as $link => $value) {
+                            ?>
+                                <a href="<?php $this->Html->_($link);?>" class="list-group-item borderless left-nav <?php echo ($value['active'] ? 'active' : '');?>">
+                                    <i class="<?php $this->Html->_($value['icon']);?>"></i>
+                                    <?php
+                                    $this->Html->_($value['name']);
+                                    ?>
+                                </a>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <?php echo $content;?>
+                        </div>
+                    </div>
+                <?php
+                } else {
+                    echo $content;
+                }
+                ?>
+            </div>
+            <div class="row footer">
+                <div class="col-md-12">
+                    <hr />
+                    <p class="text-center">Powered by <a href="http://www.blesta.com/">Blesta</a>, &copy; Phillips Data, Inc.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="global_modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="global_modal_title"></h4>
+                    </div>
+                    <div class="modal-body"><i class="fa fa-spinner fa-spin"></i></div>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
+
+</div>
+<div class="bottomall">
+        <div class="footer">
+  <div class="container">
+     <div class="row">
+
+         <div class="col-md-3">
+           <li><a href="web-hosting.php">Web Hosting</a></li>
+           <li><a href="virtual-private-servers.php">Virtual Private Servers</a></li>
+           <li><a href="dedicated-servers.php">Dedicated Hosting</a></li>
+           <li><a href="game-servers.php">Game Servers</a></li>
+           <li><a href="#">Domain Registration</a></li>
+         </div>
+
+           <div class="col-md-3">
+               <li><a href="#">Announcements</a></li>
+               <li><a href="#">About us</a></li>
+               <li><a href="#">Contact us</a></li>
+               <li><a href="tos.php">Terms of Service</a></li>
+               <li><a href="#">Acceptable Use Policy</a></li>
+           </div>
+
+           <div class="col-md-2">
+             <a href="#"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+             <a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+             <a href="#"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+             <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+             <a href="#"><i class="fa fa-youtube-square" aria-hidden="true"></i></a>
+             <a href="#"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
+           </div>
+
+           <div class="col-md-4">
+             <img class="flogo" src="<?php $this->Html->_($blesta_logo);?>">
+             <p>Lowendhost is a company located in United Kingdom that provides
+              Web, VPS and Dedicated hosting. We are you hosting choise.</p>
+             <p><small>lowendhost © All Rights Reserved.</small></p>
+           </div>
+
+
+
+     </div>
+  </div>
+</div>
+</div>
+
+        <?php echo $this->Javascript->getFiles('body');?>
+        <?php echo $this->Javascript->getInline();?>
+        <?php echo $this->Html->ifSet($body_end);?>
+    </body>
+</html>

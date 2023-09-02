@@ -1,0 +1,80 @@
+                    <div id="my-info" class="col-md-3 hidden-xs hidden-sm">
+                        <div class="panel panel-blesta">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><?php $this->_('ClientMain.myinfo.client_id', false, $this->Html->_($client->id_code, true));?></h3>
+                            </div>
+                            <div class="panel-body">
+                                <address>
+                                    <strong><?php echo $this->Html->_($contact->first_name, true) . ' ' . $this->Html->_($contact->last_name, true);?></strong><br />
+                                    <?php
+                                    echo (!empty($contact->company) ? $this->Html->_($contact->company, true) . '<br />' : '');
+                                    echo (!empty($contact->address1) ? $this->Html->_($contact->address1, true) . '<br />' : '');
+                                    echo (!empty($contact->address2) ? $this->Html->_($contact->address2, true) . '<br />' : '');
+                                    echo (!empty($contact->city) ? $this->Html->_($contact->city, true) . (!empty($contact->state) ? ', ' . $this->Html->_($contact->state, true) : '') : $this->Html->_($contact->state, true));
+                                    echo ' ' . $this->Html->_($contact->zip, true) . ' ' . $this->Html->_($contact->country, true);
+                                    ?>
+                                    <hr />
+                                    <a href="mailto:<?php $this->Html->_($contact->email);?>"><?php $this->Html->_($contact->email);?></a><br />
+                                    <?php
+                                    // Display client phone numbers
+                                    if ($this->Html->ifSet($contact->numbers, false) && ($num_numbers = count($contact->numbers)) > 0) {
+                                        for ($i = 0; $i < $num_numbers; $i++) {
+                                            $this->Html->_($contact->numbers[$i]->number);?>
+                                            <?php $this->_('ClientMain.myinfo.number', false, $this->Html->_($number_locations[$this->Html->ifSet($contact->numbers[$i]->location)], true), $this->Html->_($number_types[$this->Html->ifSet($contact->numbers[$i]->type)], true));?>
+                                            <br />
+                                        <?php
+                                        }
+                                    }
+                                    ?>
+                                </address>
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'main/edit/');?>" class="btn btn-sm btn-default btn-block pull-right">
+                                    <i class="fa fa-pencil"></i> <?php $this->_('ClientMain.myinfo.link_editclient');?>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="list-group">
+                            <?php
+                            if ($this->Html->ifSet($myinfo_settings['invoice']) && count($this->Html->ifSet($invoice_delivery_methods, [])) > 1) {
+                            ?>
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'main/invoicemethod/');?>" class="list-group-item borderless">
+                                <i class="fa fa-envelope fa-lg pull-right"></i>
+                                <p class="list-group-item-text"><?php $this->Html->_($myinfo_settings['invoice']['description']);?> <?php $this->_('ClientMain.myinfo.setting_change');?></p>
+                            </a>
+                            <?php
+                            }
+                            ?>
+                            <?php
+                            if ($this->Html->ifSet($myinfo_settings['autodebit']['enabled'], false)) {
+                            ?>
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'accounts/');?>" class="list-group-item borderless">
+                                <i class="fa fa-cog fa-lg pull-right"></i>
+                                <p class="list-group-item-text"><?php $this->Html->_($myinfo_settings['autodebit']['description']);?> <?php $this->_('ClientMain.myinfo.setting_change');?></p>
+                            </a>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                        <div class="amounts"></div>
+                    </div>
+        <?php
+        $this->Javascript->setInline('
+            $(document).ready(function() {
+                fetchCurrencyAmounts("' . $this->Html->ifSet($contact->settings['default_currency']) . '");
+                $(".col-md-3 .amounts").on("click", "a", function() {
+                    fetchCurrencyAmounts($(this).attr("id"));
+                    return false;
+                });
+            });
+
+            function fetchCurrencyAmounts(currency) {
+                $(this).blestaRequest("GET", "' . $this->Html->safe($this->base_uri . 'main/getcurrencyamounts/') . '" + currency, null, function(data) {
+                    if (data)
+                        $(".amounts").html(data);
+                },
+                null,
+                {dataType:"json"});
+            }
+        ');
+        ?>

@@ -1,0 +1,14 @@
+{
+	"version": "1.0.0",
+	"name": "Lowendhost",
+	"description": "Lowendhost Hosting Blesta Template",
+	"authors": [
+		{
+			"name": "AALayer & Alimemaj",
+			"url": "http://www.aalayer.com"
+		}
+	],
+	"require": {
+		"blesta": ">=3.2.0"
+	}
+}

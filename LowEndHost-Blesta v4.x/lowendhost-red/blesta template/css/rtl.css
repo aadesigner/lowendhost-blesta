@@ -1,0 +1,29 @@
+.logo {
+    float: right;
+    margin: 13px 0 3px 15px;
+}  
+.header {
+    float: right;
+}  
+.title {
+    float: right;
+}
+.table-curved tbody>tr>td:last-child {
+    border-left: 1px solid #e1e1e1;
+}
+
+.table-curved tbody>tr>td:first-child {
+    border-left: none;
+}
+
+.table-curved th:first-child {
+    border-radius: 0;
+}
+
+.panel-nav {
+    float: right;
+}
+
+div.panel-body div.alert {
+    clear: both;
+}

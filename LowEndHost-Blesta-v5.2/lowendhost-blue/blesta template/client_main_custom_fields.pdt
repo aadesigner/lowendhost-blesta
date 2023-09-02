@@ -1,0 +1,46 @@
+                    <?php
+                    // Display custom client fields
+                    if (!empty($custom_fields)) {
+                        foreach ($custom_fields as $field) {
+                            // Only show the field if it is visible to clients
+                            if ((isset($field->show_client) ? $field->show_client : null) == '1') {
+                                $div_class = ($field->type == 'checkbox' ? 'checkbox' : 'form-group');
+                        ?>
+                    <div class="<?php (print (isset($div_class) ? $this->Html->safe($div_class) : null));?>">
+                            <?php
+                            // Set a unique field ID
+                            $field_id = (isset($custom_field_prefix) ? $custom_field_prefix : null) . (isset($field->id) ? $field->id : null);
+
+                            // Show each custom field
+                            $disabled = ((isset($field->read_only) ? $field->read_only : null) == '1' ? ['disabled' => 'disabled'] : []);
+                            switch ($field->type) {
+                                case 'text':
+                                    $this->Form->label((isset($field->real_name) ? $field->real_name : null), $field_id);
+                                    $this->Form->fieldText($field_id, (isset($vars->{$field_id}) ? $vars->{$field_id} : (isset($field->default) ? $field->default : null)), array_merge(['id' => $field_id, 'class' => 'form-control'], $disabled));
+                                    break;
+                                case 'select':
+                                    $this->Form->label((isset($field->real_name) ? $field->real_name : null), $field_id);
+                                    $this->Form->fieldSelect($field_id, (isset($field->values) ? $field->values : []), (isset($vars->{$field_id}) ? $vars->{$field_id} : (isset($field->default) ? $field->default : null)), array_merge(['id' => $field_id, 'class' => 'form-control'], $disabled));
+                                    break;
+                                case 'textarea':
+                                    $this->Form->label((isset($field->real_name) ? $field->real_name : null), $field_id);
+                                    $this->Form->fieldTextarea($field_id, (isset($vars->{$field_id}) ? $vars->{$field_id} : (isset($field->default) ? $field->default : null)), array_merge(['id' => $field_id, 'class' => 'form-control'], $disabled));
+                                    break;
+                                case 'checkbox':
+                            ?>
+                            <label>
+                                <?php
+                                $this->Form->fieldCheckbox($field_id, (isset($field->values) ? $field->values : null), (isset($vars->{$field_id}) ? $vars->{$field_id} : (isset($field->default) ? $field->default : null)), array_merge(['id' => $field_id], $disabled));
+                                (print (isset($field->real_name) ? $this->Html->safe($field->real_name) : null));
+                                ?>
+                            </label>
+                            <?php
+                                    break;
+                            }
+                        ?>
+                    </div>
+                        <?php
+                            }
+                        }
+                    }
+                    ?>

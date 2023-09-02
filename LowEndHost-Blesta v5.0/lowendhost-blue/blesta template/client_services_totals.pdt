@@ -1,0 +1,88 @@
+
+            <div class="row total-summary">
+                <div class="col-sm-6 col-md-5 offset-sm-6 offset-md-7">
+                    <div class="card bg-light d-block p-2 mb-2">
+                        <div class="table-responsive">
+                            <table class="table table-curved">
+                                <tbody>
+                                    <tr>
+                                        <td><?php $this->_('ClientServices.totals.subtotal');?></td>
+                                        <td class="text-right">
+                                            <?php echo $this->CurrencyFormat->format($this->Html->_($totals->subtotal, true), $this->Html->ifSet($currency));?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    foreach ($this->Html->ifSet($discounts, []) as $discount) {
+                                    ?>
+                                    <tr>
+                                        <td><?php $this->Html->_($discount->description);?></td>
+                                        <td class="text-right">
+                                            <?php
+                                            // Show discount as negative
+                                            $discount = $this->Html->ifSet($discount->total, 0) * -1;
+                                            echo $this->CurrencyFormat->format($this->Html->_($discount, true), $this->Html->ifSet($currency));
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    }
+
+                                    foreach ($this->Html->ifSet($taxes, []) as $tax) {
+                                    ?>
+                                    <tr>
+                                        <td><?php $this->Html->_($tax->description);?></td>
+                                        <td class="text-right">
+                                            <?php echo $this->CurrencyFormat->format($this->Html->_($tax->total, true), $this->Html->ifSet($currency));?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <hr />
+                            <table class="table table-curved">
+                                <tbody>
+                                    <tr>
+                                        <td><?php $this->_('ClientServices.totals.total');?></td>
+                                        <td class="text-right">
+                                            <h4>
+                                                <?php
+                                                echo $this->CurrencyFormat->format(
+                                                    $this->Html->ifSet($settings['client_prorate_credits']) == 'false' && $this->Html->_($totals->total_without_exclusive_tax, true) < 0 ? 0 : $this->Html->_($totals->total_without_exclusive_tax, true),
+                                                    $this->Html->ifSet($currency)
+                                                );
+                                                ?>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    // Display the recurring total
+                                    if ($this->Html->ifSet($totals_recurring)) {
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <?php $this->_('ClientServices.totals.total_recurring');?>
+                                            <a href="#" data-toggle="tooltip" title="<?php $this->_('ClientServices.!tooltip.total_recurring');?>"><i class="fas fa-question-circle text-info"></i></a>
+                                        </td>
+                                        <td class="text-right">
+                                            <?php
+                                            echo $this->CurrencyFormat->format(
+                                                $this->Html->ifSet($settings['client_prorate_credits']) == 'false' && $this->Html->_($totals_recurring->total_without_exclusive_tax, true) < 0 ? 0 : $this->Html->_($totals_recurring->total_without_exclusive_tax, true),
+                                                $this->Html->ifSet($currency)
+                                            );
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="float-right total-summary">
+            </div>
+            <div class="clearfix"></div>

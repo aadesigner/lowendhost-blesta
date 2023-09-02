@@ -1,0 +1,53 @@
+    <div class="col-md-<?php echo ((isset($num_cards) ? $num_cards : 0) < 4) ? (((isset($num_cards) ? $num_cards : 0) < 3) ? 6 : 4) : 3; ?>">
+        <?php
+        echo !empty($card->uri) ? '<a href="' . $this->Html->safe($card->uri) . '">': '';
+
+        if ((isset($card->callback_type) ? $card->callback_type : null) == 'html') {
+        ?>
+        <div id="<?php (print (isset($card->card_id) ? $this->Html->safe($card->card_id) : null));?>">
+            <?php echo (isset($card->value) ? $card->value : null);?>
+        </div>
+        <?php
+        } else {
+            $style = null;
+
+            if (isset($card->background)) {
+                if ($card->background_type == 'color') {
+                    $background = 'background: ' . (isset($card->background) ? $this->Html->safe($card->background) : null) . ' !important;';
+                } else {
+                    $background = 'background-image: url(' . (isset($card->background) ? $this->Html->safe($card->background) : null) . ') !important;';
+                }
+
+                if (is_null($style)) {
+                    $style .= ' style="';
+                }
+
+                $style .= $background;
+            }
+
+            if (isset($card->text_color)) {
+                $text_color = 'color: ' . (isset($card->text_color) ? $this->Html->safe($card->text_color) : null) . ' !important;';
+
+                if (is_null($style)) {
+                    $style .= ' style="';
+                }
+
+                $style .= $text_color;
+            }
+
+            if (!is_null($style)) {
+                $style .= '"';
+            }
+        ?>
+        <div id="<?php (print (isset($card->card_id) ? $this->Html->safe($card->card_id) : null));?>" class="card"<?php echo (isset($style) ? $style : null);?>>
+            <div class="card-content">
+                <div class="card-value"><?php (print (isset($card->value) ? $this->Html->safe($card->value) : null));?></div>
+                <div class="card-label"><?php (print (isset($card->label) ? $this->Html->safe($card->label) : null));?></div>
+            </div>
+        </div>
+        <?php
+        }
+
+        echo !empty($card->link) ? '</a>': '';
+        ?>
+    </div>
