@@ -1,12 +1,13 @@
 # LowEndHost - Blesta Theme
 ![alt text](https://github.com/aadesigner/lowendhost-blesta/blob/master/main.jpg?raw=true)
 ### A free modern html/php theme that comes in 3 different colors and is completely integrated with Blesta billing.
- 
+   
+**Author**: AALayer  
+**Author Link**: https://aalayer.com  
+  
 **License type**: GPLv2 or later  
 **License URL**: https://www.gnu.org/licenses/gpl-2.0.html  
 **License restrictions**: You can't sell or distribute it as your own work.  
-**Author**: AALayer  
-**Author Link**: https://aalayer.com  
 
 ### Installation:
 
