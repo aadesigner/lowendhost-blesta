@@ -1,6 +1,5 @@
 # LowEndHost - Blesta Theme
 ### A free modern html/php theme that comes in 3 different colors and is completely integrated with Blesta billing.
-
 ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
 
 **License type**: GPLv2 or later  
