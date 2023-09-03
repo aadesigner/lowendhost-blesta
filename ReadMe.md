@@ -5,6 +5,10 @@
 **Author**: AALayer  
 **Author Link**: https://aalayer.com  
   
+**Theme**: LowEndHost for Blesta  
+**Theme url**: https://marketplace.aalayer.com/themes/lowendhost-blesta/  
+**Launched**: 2020 
+  
 **License type**: GPLv2 or later  
 **License URL**: https://www.gnu.org/licenses/gpl-2.0.html  
 **License restrictions**: You can't sell or distribute it as your own work.  
