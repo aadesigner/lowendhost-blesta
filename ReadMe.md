@@ -6,7 +6,7 @@
 **Author Link**: https://aalayer.com  
   
 **Theme**: LowEndHost for Blesta  
-**Theme url**: [https://marketplace.aalayer.com/themes/lowendhost-blesta/  ](https://webhost.design/theme/lowendhost-blesta-html-hosting-template/)
+**Theme url**: https://webhost.design/theme/lowendhost-blesta-html-hosting-template
 **Released in**: 2020 
   
 **License type**: GPLv2 or later  
