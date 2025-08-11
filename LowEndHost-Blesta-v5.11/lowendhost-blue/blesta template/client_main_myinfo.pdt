@@ -1,0 +1,176 @@
+                    <div id="my-info" class="col-md-3 d-none d-md-block">
+                        <div class="card card-blesta">
+                            <div class="card-header">
+                                <?php $this->_('ClientMain.myinfo.client_id', false, (isset($client->id_code) ? $this->Html->safe($client->id_code) : null));?>
+                            </div>
+                            <div class="card-body">
+                                <address>
+                                    <strong><?php echo (isset($contact->first_name) ? $this->Html->safe($contact->first_name) : null) . ' ' . (isset($contact->last_name) ? $this->Html->safe($contact->last_name) : null);?></strong><br />
+                                    <?php
+                                    echo (!empty($contact->company) ? (isset($contact->company) ? $this->Html->safe($contact->company) : null) . '<br />' : '');
+                                    echo (!empty($contact->address1) ? (isset($contact->address1) ? $this->Html->safe($contact->address1) : null) . '<br />' : '');
+                                    echo (!empty($contact->address2) ? (isset($contact->address2) ? $this->Html->safe($contact->address2) : null) . '<br />' : '');
+                                    echo (!empty($contact->city) ? (isset($contact->city) ? $this->Html->safe($contact->city) : null) . (!empty($contact->state) ? ', ' . (isset($contact->state) ? $this->Html->safe($contact->state) : null) : '') : (isset($contact->state) ? $this->Html->safe($contact->state) : null));
+                                    echo ' ' . (isset($contact->zip) ? $this->Html->safe($contact->zip) : null) . ' ' . (isset($contact->country) ? $this->Html->safe($contact->country) : null);
+                                    ?>
+                                    <hr />
+                                    <a href="mailto:<?php (print (isset($contact->email) ? $this->Html->safe($contact->email) : null));?>"><?php (print (isset($contact->email) ? $this->Html->safe($contact->email) : null));?></a><br />
+                                    <?php
+                                    // Display client phone numbers
+                                    if (($contact->numbers ?? false) && ($num_numbers = count($contact->numbers)) > 0) {
+                                        for ($i = 0; $i < $num_numbers; $i++) {
+                                            $number_location = ($contact->numbers[$i]->location ?? null);
+                                            $number_type = ($contact->numbers[$i]->type ?? null);
+                                            (print (isset($contact->numbers[$i]->number) ? $this->Html->safe($contact->numbers[$i]->number) : null));?>
+                                            <?php $this->_('ClientMain.myinfo.number', false, (isset($number_locations[$number_location]) ? $this->Html->safe($number_locations[$number_location]) : null), (isset($number_types[$number_type]) ? $this->Html->safe($number_types[$number_type]) : null));?>
+                                            <br />
+                                        <?php
+                                        }
+                                    }
+                                    ?>
+                                </address>
+                            </div>
+                            <div class="card-footer clearfix">
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'main/edit/');?>" class="btn btn-sm btn-light btn-block">
+                                    <i class="fas fa-pencil-alt"></i> <?php $this->_('ClientMain.myinfo.link_editclient');?>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card card-blesta">
+                            <div class="card-header">
+                                <?php $this->_('ClientMain.myinfo.contacts');?>
+                            </div>
+                            <div class="list-group">
+                                <?php
+                                if (count($contacts ?? []) > 0) {
+                                    foreach ($contacts as $contact) {
+                                        if ($contact->contact_type !== 'primary') {
+                                ?>
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'contacts/edit/' . $contact->id . '/');?>" class="list-group-item list-group-item-action"><i class="fas fa-user fa-fw"></i> <?php echo (isset($contact->first_name) ? $this->Html->safe($contact->first_name) : null) . ' ' . (isset($contact->last_name) ? $this->Html->safe($contact->last_name) : null);?></a>
+                                <?php
+                                        }
+                                    }
+                                } else {
+                                ?>
+                                <div class="card-body">
+                                    <div class="alert alert-info" role="alert">
+                                        <?php $this->_('ClientMain.!info.no_contacts');?>
+                                    </div>
+                                </div>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                            <div class="card-footer clearfix">
+                                <a href="<?php echo $this->Html->safe($this->base_uri . 'contacts/add/');?>" class="btn btn-sm btn-light btn-block">
+                                    <i class="fas fa-plus"></i> <?php $this->_('ClientMain.myinfo.link_addcontact');?>
+                                </a>
+                            </div>
+                        </div>
+
+                        <?php
+                        if ($managed_accounts) {
+                        ?>
+                        <div class="card card-blesta" id="managed_accounts">
+                            <div class="card-header">
+                                <?php $this->_('ClientMain.myinfo.managed_accounts');?>
+                            </div>
+                            <?php
+                            if (count($managed_accounts ?? []) > 0) {
+                            ?>
+                                <div class="card-footer p-3">
+                                    <?php
+                                    $this->Form->fieldText('managed_accounts_search', null, ['id' => 'managed_accounts_search', 'class' => 'form-control', 'placeholder' => $this->_('ClientMain.myinfo.field_managed_accounts_search', true)]);
+                                    ?>
+                                </div>
+                                <div class="list-group border-top-0 rounded-0" style="display: none;">
+                                    <?php
+                                    foreach ($managed_accounts as $managed_account) {
+                                    ?>
+                                        <a href="<?php echo $this->Html->safe($this->base_uri . 'managers/manage/' . $managed_account->id . '/');?>" class="list-group-item list-group-item-action"><i class="fas fa-user fa-fw"></i> <?php echo (isset($managed_account->first_name) ? $this->Html->safe($managed_account->first_name) : null) . ' ' . (isset($managed_account->last_name) ? $this->Html->safe($managed_account->last_name) : null);?></a>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
+                            <?php
+                            } else {
+                            ?>
+                                <div class="card-body">
+                                    <div class="alert alert-info" role="alert">
+                                        <?php $this->_('ClientMain.!info.no_managed_accounts');?>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                        }
+                        ?>
+
+                        <div class="list-group list-options mb-3">
+                            <?php
+                            if (($myinfo_settings['invoice'] ?? null) && count(($invoice_delivery_methods ?? [])) > 1) {
+                            ?>
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'main/invoicemethod/');?>" class="list-group-item">
+                                <i class="fas fa-envelope-open-text fa-lg float-right"></i>
+                                <p class="list-group-item-text"><?php (print (isset($myinfo_settings['invoice']['description']) ? $this->Html->safe($myinfo_settings['invoice']['description']) : null));?> <?php $this->_('ClientMain.myinfo.setting_change');?></p>
+                            </a>
+                            <?php
+                            }
+                            ?>
+                            <?php
+                            if (($myinfo_settings['autodebit']['enabled'] ?? false)) {
+                            ?>
+                            <a href="<?php echo $this->Html->safe($this->base_uri . 'accounts/');?>" class="list-group-item">
+                                <i class="fas fa-cog fa-lg float-right"></i>
+                                <p class="list-group-item-text"><?php (print (isset($myinfo_settings['autodebit']['description']) ? $this->Html->safe($myinfo_settings['autodebit']['description']) : null));?> <?php $this->_('ClientMain.myinfo.setting_change');?></p>
+                            </a>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                        <div class="amounts"></div>
+                    </div>
+        <?php
+        $this->Javascript->setInline('
+            $(document).ready(function() {
+                fetchCurrencyAmounts("' . ($contact->settings['default_currency'] ?? null) . '");
+                $(".col-md-3 .amounts").on("click", "a", function() {
+                    fetchCurrencyAmounts($(this).attr("id"));
+                    return false;
+                });
+                
+                $("#managed_accounts input").focus(function(){
+                    $("#managed_accounts .list-group").show();
+                });
+                $("#managed_accounts input").focusout(function(){
+                    if ($(this).val() == "") {
+                        // We add a small timeout of 300 milliseconds, to give enough time to register the click
+                        // on any item of the list
+                        setTimeout(function() {
+                            $("#managed_accounts .list-group").hide();
+                        }, 300);
+                    }
+                });
+                $("#managed_accounts input").on("input", function(e){
+                    $(this).blestaRequest("GET", "' . $this->Html->safe($this->base_uri . 'main/searchmanagedaccounts/') . '" + $(this).val(), null, function(data) {
+                        if (data) {
+                            $("#managed_accounts .list-group").show();
+                            $("#managed_accounts .list-group").html(data);
+                        }
+                    });
+                });
+            });
+
+            function fetchCurrencyAmounts(currency) {
+                $(this).blestaRequest("GET", "' . $this->Html->safe($this->base_uri . 'main/getcurrencyamounts/') . '" + currency, null, function(data) {
+                    if (data)
+                        $(".amounts").html(data);
+                },
+                null,
+                {dataType:"json"});
+            }
+        ');
+        ?>

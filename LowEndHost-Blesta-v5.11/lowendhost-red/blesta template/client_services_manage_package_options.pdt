@@ -1,0 +1,30 @@
+            <?php
+            // Show the current options title if there are current options or if a message will be shown below it
+            if (!empty($edit_fields) || (isset($show_no_options_message) ? $show_no_options_message : null)) {
+            ?>
+            <h4><?php $this->_('ClientServices.manageoptions.heading_current');?></h4>
+                <?php
+                if (!empty($edit_fields)) {
+                    echo (isset($edit_fields) ? $edit_fields : null);
+                } else {
+                ?>
+                <div class="alert alert-info">
+                    <p><?php $this->_('ClientServices.manageoptions.no_options');?></p>
+                </div>
+                <div class="clearfix"></div>
+                <?php
+                }
+            }
+
+            if (!empty($add_fields)) {
+            ?>
+            <hr />
+            <h4><?php $this->_('ClientServices.manageoptions.heading_new');?></h4>
+            <?php
+                echo (isset($add_fields) ? $add_fields : null);
+            }
+            ?>
+
+            <?php
+            echo ($option_logic_js ?? null);
+            ?>

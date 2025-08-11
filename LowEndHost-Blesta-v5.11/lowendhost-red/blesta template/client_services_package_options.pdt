@@ -1,0 +1,8 @@
+        <div class="service_package_options">
+            <?php
+            // Show package fields
+            if (isset($input_html) && ($module_field_html = $input_html->generate(null, $this->view))) {
+                echo $module_field_html;
+            }
+            ?>
+        </div>

@@ -1,0 +1,144 @@
+
+<div class="col-md-3">
+    <?php echo ($navigation ?? null); ?>
+</div>
+<div class="col-md-9">
+    <div class="row">
+        <div class="col-md-12">
+            <?php
+            echo ($message ?? null);
+
+            $link_buttons = [
+                ['name' => $this->_('ClientAccounts.index.create_account', true), 'attributes' => ['href' => $this->base_uri . 'accounts/add/']]
+            ];
+
+            $this->WidgetClient->clear();
+            $this->WidgetClient->setLinkButtons($link_buttons);
+            $this->WidgetClient->create($this->_('ClientAccounts.index.boxtitle_accounts', true), ['id' => 'client_accounts'], ($render_section ?? null));
+            $this->WidgetClient->startBody();
+
+            $this->Form->create(null, ['class' => 'disable-on-submit']);
+
+            if (($accounts ?? false) && (($num_accounts = count($accounts)) > 0)) {
+            ?>
+            <div class="table-responsive">
+                <table class="table table-curved table-striped mb-2" id="contacts">
+                    <thead>
+                        <th><?php $this->Form->fieldRadio('account_id', 'none', ((isset($vars->account_id) ? $this->Html->safe($vars->account_id) : null) == 'none'));?></th>
+                        <th><?php $this->_('ClientAccounts.index.heading_name');?></th>
+                        <th><?php $this->_('ClientAccounts.index.heading_type');?></th>
+                        <th><?php $this->_('ClientAccounts.index.heading_last4');?></th>
+                        <th><?php $this->_('ClientAccounts.index.heading_options');?></th>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Save the account type of the account that is checked
+                        $account_type = 'cc';
+
+                        // Loop through all accounts
+                        for ($i = 0; $i < $num_accounts; $i++) {
+                        ?>
+                        <tr<?php echo $this->Html->concat(' ', ($i % 2 == 1) ? ' class="odd_row"' : '', '');?>>
+                            <?php
+                            // Radio is checked if both account ID and account type match
+                            $radio_checked = false;
+
+                            if (((isset($vars->account_id) ? $this->Html->safe($vars->account_id) : null) == (isset($accounts[$i]->id) ? $accounts[$i]->id : null)) &&
+                                ((isset($vars->type) ? $this->Html->safe($vars->type) : null) == ($accounts[$i]->account_type ?? null))) {
+                                $radio_checked = true;
+                                $account_type = ($accounts[$i]->account_type ?? null);
+                            }
+                            ?>
+                            <td>
+                                <?php
+                                $this->Form->fieldRadio('account_id', ($accounts[$i]->id ?? null), $radio_checked);
+                                $this->Form->fieldHidden('account_type', ($accounts[$i]->account_type ?? null));
+                                ?>
+                            </td>
+                            <td><?php echo $this->Html->concat(' ', (isset($accounts[$i]->first_name) ? $this->Html->safe($accounts[$i]->first_name) : null), (isset($accounts[$i]->last_name) ? $this->Html->safe($accounts[$i]->last_name) : null));?></td>
+                            <td><?php $this->_('ClientAccounts.index.type_' . $accounts[$i]->account_type, false, $account_types[$accounts[$i]->account_type], (isset($ach_types[$accounts[$i]->type]) ? $ach_types[$accounts[$i]->type] : (isset($cc_types[$accounts[$i]->type]) ? $cc_types[$accounts[$i]->type] : null)));?></td>
+                            <td><?php (print (isset($accounts[$i]->last4) ? $this->Html->safe($accounts[$i]->last4) : null));?></td>
+                            <td>
+                                <div class="btn-group">
+                                    <?php
+                                    if (($accounts[$i]->status ?? 'active') == 'active') {
+                                    ?>
+                                    <a href="<?php echo $this->Html->safe($this->base_uri . 'accounts/edit' . (($accounts[$i]->account_type ?? null) == 'cc' ? 'cc' : 'ach') . '/' . (isset($accounts[$i]->id) ? $this->Html->safe($accounts[$i]->id) : null) . '/');?>" class="btn btn-xs btn-light">
+                                        <i class="fas fa-edit fa-fw"></i> <?php $this->_('ClientAccounts.index.option_edit');?>
+                                    </a>
+                                    <?php
+                                    } elseif (($accounts[$i]->account_type ?? null) == 'ach') {
+                                    ?>
+                                    <a href="<?php echo $this->Html->safe($this->base_uri . 'accounts/verifyach/' . (isset($accounts[$i]->id) ? $this->Html->safe($accounts[$i]->id) : null) . '/');?>" class="btn btn-xs btn-light">
+                                        <i class="fas fa-check fa-fw"></i> <?php $this->_('ClientAccounts.index.option_verify');?>
+                                    </a>
+                                    <?php
+                                    }
+                                    ?>
+                                    <button class="btn btn-xs btn-light dropdown-toggle" data-toggle="dropdown" type="button">
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="<?php echo $this->Html->safe($this->base_uri . 'accounts/delete' . ((isset($accounts[$i]->account_type) ? $accounts[$i]->account_type : null) == 'cc' ? 'cc' : 'ach') . '/' . (isset($accounts[$i]->id) ? $this->Html->safe($accounts[$i]->id) : null) . '/');?>" rel="<?php echo $this->Html->safe($this->_('ClientAccounts.index.confirm_delete', true));?>">
+                                            <?php
+                                            $this->Form->fieldHidden('id', ($accounts[$i]->id ?? null));
+                                            ?>
+                                            <i class="fas fa-trash fa-fw"></i> <?php $this->_('ClientAccounts.index.option_delete');?>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php $this->Form->fieldHidden('type', (isset($account_type) ? $this->Html->safe($account_type) : null), ['id' => 'account_type']);?>
+            <button class="btn btn-light float-right" type="submit">
+                <i class="fas fa-plus-circle"></i> <?php $this->_('ClientAccounts.index.field_accountsubmit');?>
+            </button>
+            <button id="remove-auto-debit" class="btn btn-danger float-left" type="button">
+                <i class="fas fa-minus-circle"></i> <?php $this->_('ClientAccounts.index.field_removeautodebit');?>
+            </button>
+            <?php
+            } else {
+            ?>
+            <div class="alert alert-info">
+                <p><?php $this->_('ClientAccounts.index.no_results');?></p>
+            </div>
+            <?php
+            }
+
+            $this->Form->end();
+            $this->WidgetClient->endBody();
+            $this->WidgetClient->end();
+            ?>
+        </div>
+    </div>
+</div>
+<?php
+$this->Javascript->setInline("
+	$(document).ready(function() {
+		$('#client_accounts input[name=\'account_id\']').click(function() {
+			$('#account_type').val($('input[name=\'account_type\']', $(this).parent()).val());
+		});
+
+		// Handle confirmation on delete action
+		$('#client_accounts a[rel]').each(function() {
+			$(this).blestaModalConfirm({
+				base_url: '" . $this->base_uri . "',
+				confirm_data: {id: $('input[name=\"id\"]', $(this)).val()}
+			});
+		});
+		
+		// Remove auto debit
+		$('#remove-auto-debit').click(function() {
+		    $('#contacts thead input').trigger('click');
+		    $('[type=\'submit\']').trigger('click');
+        });
+	});
+");
+?>

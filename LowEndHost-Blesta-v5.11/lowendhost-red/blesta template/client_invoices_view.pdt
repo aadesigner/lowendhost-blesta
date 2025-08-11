@@ -1,0 +1,178 @@
+        <div class="col-md-12">
+            <?php
+            echo ($message ?? null);
+
+            $this->WidgetClient->clear();
+            $this->WidgetClient->create($this->_('ClientInvoices.view.boxtitle_' . ($invoice->status == 'proforma' ? 'proforma' : 'invoice'), true, (isset($invoice->id_code) ? $this->Html->safe($invoice->id_code) : null)), ['id' => 'client_invoice'], ($render_section ?? null));
+            $this->WidgetClient->startBody();
+
+            if (!empty($invoice)) {
+            ?>
+            <div class="mb-2">
+                <h4>
+                    <?php $this->_('ClientInvoices.view.heading_' . ($invoice->status == 'proforma' ? 'proforma' : 'invoice'), false, (isset($invoice->id_code) ? $this->Html->safe($invoice->id_code) : null));?>
+
+                    <?php
+                    if (!empty($invoice->date_closed) && $invoice->status == 'active') {
+                    ?>
+                        <div class="text-success float-right"><?php $this->_('ClientInvoices.view.invoice_paid');?></div>
+                    <?php
+                    }
+                    ?>
+                </h4>
+
+                <div class="row">
+                    <div class="col-lg-6 pb-3">
+                        <div class="p-3 h-100 card">
+                            <h4><?php $this->_('ClientInvoices.view.invoice_from');?></h4>
+                            <strong><?php echo $this->Html->safe($company->name ?? '');?></strong>
+                            <?php
+                            if (!empty($company->address)) {
+                            ?>
+                                <p><?php echo nl2br($this->Html->safe($company->address));?></p>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 pb-3">
+                        <div class="p-3 h-100 card">
+                            <h4><?php $this->_('ClientInvoices.view.invoice_bill_to');?></h4>
+                            <strong><?php echo $this->Html->safe(($client->first_name ?? '') . ' ' . ($client->last_name ?? ''));?></strong>
+                            <?php
+                            if (!empty($client->address1)) {
+                            ?>
+                                <p>
+                                    <?php
+                                    echo nl2br($this->Html->safe($client->address1));
+
+                                    if (!empty($client->address2)) {
+                                        echo nl2br($this->Html->safe($client->address2));
+                                    }
+                                    ?>
+                                </p>
+                            <?php
+                            }
+                            ?>
+                            <p><?php echo $this->Html->safe(trim($client->city . ', ' . ($client->state ?? '') . ' ' . ($client->zip ?? '') . ' ' . ($client->country ?? '')));?></p>
+                            <p><strong><?php $this->_('ClientInvoices.view.invoice_client_id');?></strong> <?php echo $this->Html->safe($client->id_value);?></p>
+                            <hr />
+                            <p><strong><?php $this->_('ClientInvoices.view.invoice_date_billed');?></strong> <?php echo $this->Date->cast($invoice->date_billed, $client->settings['date_format']);?></p>
+                            <p><strong><?php $this->_('ClientInvoices.view.invoice_date_due');?></strong> <?php echo $this->Date->cast($invoice->date_due, $client->settings['date_format']);?></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-curved table-striped">
+                        <thead>
+                            <tr>
+                                <th><?php $this->_('ClientInvoices.view.invoice_description');?></th>
+                                <th><?php $this->_('ClientInvoices.view.invoice_quantity');?></th>
+                                <th><?php $this->_('ClientInvoices.view.invoice_unit_price');?></th>
+                                <th><?php $this->_('ClientInvoices.view.invoice_cost');?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $currency_options = [
+                                'with_separator' => false,
+                                'decimals' => (isset($currency->precision) ? $currency->precision : null)
+                            ];
+                            foreach (($invoice->line_items ?? []) as $line) {
+                            ?>
+                            <tr>
+                                <td><?php (print (isset($line->description) ? $this->Html->safe($line->description) : null));?></td>
+                                <td><?php echo $this->Html->safe($this->CurrencyFormat->truncateDecimal(($line->qty ?? null), 0));?></td>
+                                <td><?php echo $this->CurrencyFormat->format(($line->amount ?? null), ($currency->code ?? null), $currency_options);?></td>
+                                <td><?php echo $this->CurrencyFormat->format(($line->subtotal ?? null), ($currency->code ?? null), $currency_options);?></td>
+                            </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <?php
+                    if (!empty($invoice->note_public)) {
+                    ?>
+                        <strong><?php $this->_('ClientInvoices.view.invoice_notes');?></strong>
+                        <p><?php echo nl2br($this->Html->safe($invoice->note_public));?></p>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-md-5">
+                    <div class="float-right">
+                        <div class="table-responsive my-2">
+                            <table class="table table-curved">
+                                <tbody>
+                                    <tr>
+                                        <td><strong><?php $this->_('ClientInvoices.view.invoice_subtotal');?></strong></td>
+                                        <td><?php echo $this->CurrencyFormat->format(($invoice->subtotal ?? null), ($currency->code ?? null));?></td>
+                                    </tr>
+                                    <?php
+                                    if (!empty($invoice->taxes)) {
+                                        foreach ($invoice->taxes as $tax) {
+                                    ?>
+                                        <tr>
+                                            <td><strong><?php $this->_('ClientInvoices.view.invoice_tax', false, $tax->name, $tax->amount);?></strong></td>
+                                            <td><?php echo $this->CurrencyFormat->format(($tax->tax_total ?? null), ($currency->code ?? null));?></td>
+                                        </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td><strong><?php $this->_('ClientInvoices.view.invoice_total');?></strong></td>
+                                        <td><?php echo $this->CurrencyFormat->format(($invoice->total ?? null), ($currency->code ?? null));?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <?php
+                if (!empty($client->settings['inv_terms_' . ($language ?? '')])) {
+                ?>
+                    <div class="col-md-12">
+                        <div class="card p-2 my-2">
+                            <p><strong><?php $this->_('ClientInvoices.view.invoice_terms');?></strong></p>
+                            <?php echo nl2br($this->Html->safe($client->settings['inv_terms_' . ($language ?? '')]));?>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+
+            <div class="float-right">
+                <a href="<?php echo $this->Html->safe($this->base_uri . 'invoices/download/' . ($invoice->id ?? null) . '/');?>" class="btn btn-light">
+                    <i class="fas fa-download"></i> <?php $this->_('ClientInvoices.view.field_download');?>
+                </a>
+
+                <?php
+                if (empty($invoice->date_closed)) {
+                ?>
+                    <a href="<?php echo $this->Html->safe($this->base_uri . 'pay/method/' . ($invoice->id ?? null) . '/');?>" class="btn btn-light">
+                        <i class="fas fa-arrow-circle-right"></i> <?php $this->_('ClientInvoices.view.field_pay_invoice');?>
+                    </a>
+                <?php
+                }
+                ?>
+            </div>
+
+            <?php
+            $this->WidgetClient->endBody();
+            $this->WidgetClient->end();
+            ?>
+        </div>

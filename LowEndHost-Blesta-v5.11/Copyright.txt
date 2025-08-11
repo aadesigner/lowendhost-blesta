@@ -1,0 +1,7 @@
+AALayer Web Design Agency
+All Rights Reserved
+www.aalayer.com
+---
+License type: GPLv2 or later
+License URL: https://www.gnu.org/licenses/gpl-2.0.html
+License restrictions: You can't sell or distribute it as your own work.
