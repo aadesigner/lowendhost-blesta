@@ -1,8 +1,0 @@
-
-    <div class="col-md-12 text-center text-secondary p-3 mt-3 mb-4">
-        <h1><i class="fas fa-exclamation-triangle"></i> <?php $this->_('404.heading_error');?></h1>
-        <p><?php $this->_('404.text_error');?></p>
-        <a href="<?php echo $this->base_uri;?>" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> <?php $this->_('404.text_go_to_home');?>
-        </a>
-    </div>

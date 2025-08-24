@@ -1,9 +1,0 @@
-<div class="list-group border-top-0 rounded-0">
-    <?php
-    foreach ($accounts ?? [] as $account) {
-        ?>
-        <a href="<?php echo $this->Html->safe($this->base_uri . 'managers/manage/' . $account->id . '/');?>" class="list-group-item list-group-item-action"><i class="fas fa-user fa-fw"></i> <?php echo (isset($account->first_name) ? $this->Html->safe($account->first_name) : null) . ' ' . (isset($account->last_name) ? $this->Html->safe($account->last_name) : null);?></a>
-        <?php
-    }
-    ?>
-</div>

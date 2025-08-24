@@ -1,0 +1,8 @@
+----
+DO NOT UPLOAD THESE FOLDERS IN BLESTA!
+---
+
+These are just HTML themes but created in .php extension! Only meant to be used a primary website theme with no CMS/billing platform. Static!
+
+You just local server to run this theme and a text editor to edit them. 
+(We recommend XAMPP + Visual Studio Code)
